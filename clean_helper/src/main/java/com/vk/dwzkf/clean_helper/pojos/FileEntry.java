@@ -32,12 +32,16 @@ public class FileEntry {
         String realPath = filePath.toAbsolutePath().toString();
         String fileNameStr = filePath.getFileName().toString();
         int lastIndexDot = fileNameStr.lastIndexOf(".");
-        if (lastIndexDot != -1) {
+        if (lastIndexDot > 0) {
             String fileName = fileNameStr.substring(0, lastIndexDot);
             String extension = fileNameStr.substring(lastIndexDot, 
                 fileNameStr.length()
             );
             return new FileEntry(extension, fileName, realPath);
+        }
+        else if (lastIndexDot == -1) {
+            return new FileEntry(EMPTY_EXTENSION, fileNameStr, realPath)
+                            .setEmptyExtension(true);
         }
         else {
             return new FileEntry(EMPTY_EXTENSION, fileNameStr, realPath)
