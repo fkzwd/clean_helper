@@ -2,8 +2,6 @@ package com.vk.dwzkf.clean_helper.pojos;
 
 import java.nio.file.Path;
 
-import com.vk.dwzkf.clean_helper.exception.BadFilePathException;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Setter
 public class FileEntry {
+    private static final String EMPTY_EXTENSION = "?";
+    private boolean isEmptyExtension = false;
     private String extension;
     private String fileName;
     private String realPath;
@@ -20,6 +20,11 @@ public class FileEntry {
         this.extension = extension.toLowerCase();
         this.fileName = fileName;
         this.realPath = realPath;
+    }
+
+    public FileEntry setEmptyExtension(boolean isEmptyExtension) {
+        this.isEmptyExtension = isEmptyExtension;
+        return this;
     }
 
     public static FileEntry create(Path filePath) {
@@ -35,7 +40,8 @@ public class FileEntry {
             return new FileEntry(extension, fileName, realPath);
         }
         else {
-            throw new BadFilePathException(filePath.toString());
+            return new FileEntry(EMPTY_EXTENSION, fileNameStr, realPath)
+                            .setEmptyExtension(true);
         }
     }
 
@@ -44,5 +50,17 @@ public class FileEntry {
                 || fileName == null || fileName.isBlank()
                 || realPath == null || realPath.isBlank()
         );
+    }
+
+    @Override
+    public String toString() {
+        String extension = this.extension;
+        if (isEmptyExtension) {
+            extension = "NO EXTENSION";
+        }
+        return "FileEntry:{"+"\n\tExtension: "+extension+","
+                +"\n\tFileName: "+fileName+","
+                +"\n\tRealPath: "+realPath
+                +"\n}";
     }
 }

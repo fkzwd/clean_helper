@@ -30,9 +30,9 @@ public class CleanHelperApplication {
 		FileMap fileMap = new FileMap(fileScaner.scanDirectory(TEST_PATH));
 		Map<String, List<FileEntry>> map = fileMap.getMap();
 		for (Map.Entry<String, List<FileEntry>> e : map.entrySet()) {
-			log.info("Directory: {}", e.getKey());
+			System.out.println("----------------FileType: "+e.getKey());
 			for (FileEntry fe : e.getValue()) {
-				System.out.println("\t\t File:"+fe.getFileName()+fe.getExtension());
+				System.out.println(fe);
 			}
 		}
 	}
