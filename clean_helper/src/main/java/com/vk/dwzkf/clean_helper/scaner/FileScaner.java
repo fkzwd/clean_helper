@@ -44,6 +44,19 @@ public class FileScaner {
                     return FileVisitResult.CONTINUE;
                 }
                 
+                @Override
+                public FileVisitResult 	preVisitDirectory(Path filePath,
+                        BasicFileAttributes attrs) throws IOException
+                {
+                    if (Files.isReadable(filePath) &&
+                            (Files.isDirectory(filePath) || Files.isWritable(filePath))) {
+                        log.info("Have access to dir '{}'", filePath);
+                        return FileVisitResult.CONTINUE;
+                    } else {
+                        log.error("Have no READ/WRITE permission to file'{}'. Skipped", filePath);
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                }
             });
         } catch (IOException ex) {
             log.error("IOException error occured.", ex);

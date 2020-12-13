@@ -1,5 +1,7 @@
 package com.vk.dwzkf.clean_helper;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -18,16 +20,22 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @SpringBootApplication
 public class CleanHelperApplication {
-	private static final String TEST_PATH = "C:\\Users\\lives\\Desktop\\trash\\C++";
 	public static void main(String[] args) {
+		if (args.length < 1) {
+			throw new IllegalArgumentException("No args provided.");
+		}
+		String testPath = args[0];
+		if (!Files.exists(Paths.get(testPath))) {
+			throw new IllegalArgumentException("Path not exists. Path:"+testPath);
+		}
 		ApplicationContext ctx = SpringApplication.run(CleanHelperApplication.class, 
 			args);
-		ctx.getBean(CleanHelperApplication.class).app();
+		ctx.getBean(CleanHelperApplication.class).app(testPath);
 	}
 
-	public void app() {
+	public void app(String testPath) {
 		FileScaner fileScaner = new FileScaner();
-		FileMap fileMap = new FileMap(fileScaner.scanDirectory(TEST_PATH));
+		FileMap fileMap = new FileMap(fileScaner.scanDirectory(testPath));
 		Map<String, List<FileEntry>> map = fileMap.getMap();
 		for (Map.Entry<String, List<FileEntry>> e : map.entrySet()) {
 			System.out.println("----------------FileType: "+e.getKey());
